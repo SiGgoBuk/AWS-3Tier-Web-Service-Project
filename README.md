@@ -420,10 +420,45 @@ sudo chown tomcat:tomcat mysql-connector-j-8.0.33.jar
 sudo vi /home/tomcat/apache-tomcat-9.0.108/conf/server.xml
 ```
 
+```xml
+<GlobalNamingResources>
+    <!-- Editable user database that can also be used by
+         UserDatabaseRealm to authenticate users -->
+    <Resource name="jdbc/HistoryDB"
+              auth="Container"
+              type="javax.sql.DataSource"
+              maxTotal="20"
+              maxIdle="5"
+              maxWaitMillis="10000"
+              username="admin"
+              password="password"
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://mydb.cdclngzqqmhq.ap-northeast-2.rds.amazonaws.com:3306/board_db?useSSL=true&amp;serverTimezone=UTC"/>
+</GlobalNamingResources>
+```
+
 ### context.xml에 ResourceLink 추가
 ```bash
 sudo vi /home/tomcat/apache-tomcat-9.0.108/conf/context.xml
 ```
+```xml
+<Context>
+    <!-- Default set of monitored resources. If one of these change, the -->
+    <!-- web application will be reloaded.                               -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>WEB-INF/tomcat-web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+    <ResourceLink name="jdbc/HistoryDB"
+                  global="jdbc/HistoryDB"
+                  type="javax.sql.DataSource"/>
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="" />
+    -->
+</Context>
+```
+
 
 <br>
 
